@@ -15,3 +15,7 @@ This toolkit has the following tools:
 | `find_missing_attachments` | Identify missing attachments.                   |
 | `find_duplicates`          | Identify duplicate files.                       |
 | `find_sync_conflicts`      | Identify Syncthing conflicts.                   |
+
+## How Can I Support This?
+
+We welcome fixes, features and donations.
