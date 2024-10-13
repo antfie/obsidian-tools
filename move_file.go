@@ -30,7 +30,7 @@ func copyNote(source, destination string, deleteSource bool) {
 
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
-			log.Printf("Creating desitnation path \"%s\",,.", destinationAbs)
+			log.Printf("Creating destination path \"%s\",,.", destinationAbs)
 			err := os.Mkdir(destinationAbs, 0750)
 
 			if err != nil {
