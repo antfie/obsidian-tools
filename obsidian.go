@@ -37,7 +37,7 @@ type ObsidianConfig struct {
 func getAttachmentPath(obsidianRoot string) string {
 	obsidianConfigFile := filepath.Join(obsidianRoot, ".obsidian", "app.json")
 
-	data, err := os.ReadFile(obsidianConfigFile)
+	data, err := os.ReadFile(path.Clean(obsidianConfigFile))
 
 	if err != nil {
 		log.Fatal(err)

@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"log"
 	"os"
+	"path"
 )
 
 const emptyFileHash = "c672b8d1ef56ed28ab87c3622c5114069bdd3ad7b8f9737498d0c01ecef0967a"
@@ -22,7 +23,7 @@ func findDuplicates(source string) {
 	var items = make(map[string][]string)
 
 	for _, filePath := range allFiles {
-		data, err := os.ReadFile(filePath)
+		data, err := os.ReadFile(path.Clean(filePath))
 
 		if err != nil {
 			log.Fatal(err)

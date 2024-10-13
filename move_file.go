@@ -104,7 +104,7 @@ func copyNote(source, destination string, deleteSource bool) {
 			log.Fatal(err)
 		}
 
-		for attachmentName, _ := range attachments {
+		for attachmentName := range attachments {
 			if strings.Contains(string(data), attachmentName) {
 				filesToKeep = append(filesToKeep, attachmentName)
 			}
