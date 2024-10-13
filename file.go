@@ -8,16 +8,32 @@ import (
 	"path/filepath"
 )
 
-func getAllFiles(path string) []string {
+var ignoredFileNames = []string{
+	".DS_Store",
+}
+
+var ignoredFolderNames = []string{
+	".stversions",
+}
+
+func getAllFiles(rootPath string) []string {
 	var files []string
 
-	err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(rootPath, func(currentPath string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 
-		if !info.IsDir() {
-			files = append(files, path)
+		base := path.Base(currentPath)
+
+		if info.IsDir() {
+			if isInArray(base, ignoredFolderNames) {
+				return filepath.SkipDir
+			}
+		} else {
+			if !isInArray(base, ignoredFileNames) {
+				files = append(files, currentPath)
+			}
 		}
 
 		return nil
