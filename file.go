@@ -14,6 +14,7 @@ var ignoredFileNames = []string{
 
 var ignoredFolderNames = []string{
 	".stversions",
+	".git",
 }
 
 func getAllFiles(rootPath string) []string {
