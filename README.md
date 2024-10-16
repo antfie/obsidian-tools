@@ -15,8 +15,8 @@ This toolkit has the following tools:
 | `delete`                   | Delete a note and any unreferenced attachments |
 | `find_missing_attachments` | Identify missing attachments                   |
 | `find_duplicates`          | Identify duplicate files                       |
-| `find_sync_conflicts`      | Identify Syncthing conflicts                   |
 | `find_empty_files`         | Identify empty files                           |
+| `find_sync_conflicts`      | Identify Syncthing conflicts                   |
 
 ## How Can I Support This?
 
