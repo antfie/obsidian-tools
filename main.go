@@ -10,11 +10,13 @@ import (
 //goland:noinspection GoUnnecessarilyExportedIdentifiers
 var AppVersion = "0.0"
 
+var usageText = "No command specified. Usage: go run main.go command.\nAvailable commands:\n  move\n  copy\n  delete\n  find_missing_attachments\n  find_duplicates\n  find_empty_files\n  find_sync_conflicts\n"
+
 func main() {
 	print(fmt.Sprintf("obsidian-tools version %s\n", AppVersion))
 
 	if len(os.Args) < 2 {
-		log.Fatal("No command specified. Usage: go run main.go command.\nAvailable commands:\n  move\n  copy\n  delete\n  find_missing_attachments\n  find_duplicates\n  find_empty_files\n  find_sync_conflicts\n")
+		log.Fatal("No command specified. " + usageText)
 	}
 
 	command := os.Args[1]
@@ -77,5 +79,5 @@ func main() {
 		return
 	}
 
-	log.Fatalf("Command \"%s\" not recognised.", command)
+	log.Fatalf("Command \"%s\" not recognised. %s", command, usageText)
 }
