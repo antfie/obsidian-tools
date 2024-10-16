@@ -6,7 +6,7 @@
 
 # obsidian-tools
 
-This toolkit has the following tools:
+This is an Obsidian toolkit. It has the following features:
 
 | Tool                       | Description                                    |
 |----------------------------|------------------------------------------------|
@@ -20,4 +20,4 @@ This toolkit has the following tools:
 
 ## How Can I Support This?
 
-We welcome fixes, features and donations.
+W welcome fixes, features and donations.
