@@ -14,7 +14,7 @@ func main() {
 	print(fmt.Sprintf("obsidian-tools version %s\n", AppVersion))
 
 	if len(os.Args) < 2 {
-		log.Fatal("No command specified. Usage: go run main.go command.\nAvailable commands: move, copy, find_missing_attachments, find_duplicates, find_sync_conflicts, find_empty_files")
+		log.Fatal("No command specified. Usage: go run main.go command.\nAvailable commands:\n  move\n  copy\n  delete\n  find_missing_attachments\n  find_duplicates\n  find_empty_files\n  find_sync_conflicts\n")
 	}
 
 	command := os.Args[1]
@@ -60,20 +60,20 @@ func main() {
 		findDuplicates(os.Args[2])
 		return
 
-	case "find_sync_conflicts":
-		if len(os.Args) != 3 {
-			log.Fatal("Find sync conflicts requires a source.")
-		}
-
-		findSyncConflicts(os.Args[2])
-		return
-
 	case "find_empty_files":
 		if len(os.Args) != 3 {
 			log.Fatal("Find sync conflicts requires a source.")
 		}
 
 		findEmptyFiles(os.Args[2])
+		return
+
+	case "find_sync_conflicts":
+		if len(os.Args) != 3 {
+			log.Fatal("Find sync conflicts requires a source.")
+		}
+
+		findSyncConflicts(os.Args[2])
 		return
 	}
 
