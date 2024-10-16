@@ -11,7 +11,7 @@ import (
 const emptyFileHash = "c672b8d1ef56ed28ab87c3622c5114069bdd3ad7b8f9737498d0c01ecef0967a"
 
 func findDuplicates(source string) {
-	sourceAbs := assertFolderExists(source)
+	sourceAbs := assertSourceExists(source)
 	sourceObsidianRoot, err := findObsidianRoot(sourceAbs)
 
 	if err != nil {

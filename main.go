@@ -36,6 +36,14 @@ func main() {
 		copyNote(os.Args[2], os.Args[3], false)
 		return
 
+	case "delete":
+		if len(os.Args) != 3 {
+			log.Fatal("Delete requires a source")
+		}
+
+		deleteNote(os.Args[2])
+		return
+
 	case "find_missing_attachments":
 		if len(os.Args) != 3 {
 			log.Fatal("Find missing attachments requires a source.")

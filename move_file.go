@@ -6,15 +6,12 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"strings"
 )
 
 func copyNote(source, destination string, deleteSource bool) {
-	sourceAbs := assertFolderExists(source)
+	sourceAbs := assertSourceExists(source)
 
-	if strings.ToLower(filepath.Ext(sourceAbs)) != ".md" {
-		log.Fatalf("Source \"%s\" file is not a markdown file.", sourceAbs)
-	}
+	assertSourceIsMarkdownFile(sourceAbs)
 
 	destinationAbs, err := filepath.Abs(destination)
 
@@ -87,52 +84,8 @@ func copyNote(source, destination string, deleteSource bool) {
 		log.Fatal(err)
 	}
 
-	if !deleteSource {
-		return
-	}
-
-	var sourceFileStillInUse = false
-	var filesToKeep []string
-
-	notes := getNotes(allFiles)
-
-	// Check if attachments are not referenced and good to delete
-	for _, note := range notes {
-		data, err := os.ReadFile(path.Clean(note))
-
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		for attachmentName := range attachments {
-			if strings.Contains(string(data), attachmentName) {
-				filesToKeep = append(filesToKeep, attachmentName)
-			}
-		}
-
-		if strings.Contains(string(data), filepath.Base(sourceAbs)) {
-			sourceFileStillInUse = true
-		}
-	}
-
-	// Delete the source file if no longer referenced
-	if !sourceFileStillInUse {
-		//err = os.Remove(sourceAbs)
-
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-
-	for attachmentName, attachmentPath := range attachments {
-		if !isInArray(attachmentName, filesToKeep) {
-			//err = os.Remove(path.Join(attachmentPath,attachmentName ))
-			print(attachmentName, attachmentPath)
-
-			if err != nil {
-				log.Fatal(err)
-			}
-		}
+	if deleteSource {
+		deleteNote(source)
 	}
 }
 

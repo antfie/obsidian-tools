@@ -63,7 +63,7 @@ func copyFile(source, destination string) error {
 	return nil
 }
 
-func assertFolderExists(source string) string {
+func assertSourceExists(source string) string {
 	sourceAbs, err := filepath.Abs(source)
 
 	if err != nil {

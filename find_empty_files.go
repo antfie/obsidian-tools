@@ -6,7 +6,7 @@ import (
 )
 
 func findEmptyFiles(source string) {
-	sourceAbs := assertFolderExists(source)
+	sourceAbs := assertSourceExists(source)
 
 	sourceObsidianRoot, err := findObsidianRoot(sourceAbs)
 

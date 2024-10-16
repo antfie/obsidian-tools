@@ -7,7 +7,7 @@ import (
 )
 
 func findSyncConflicts(source string) {
-	sourceAbs := assertFolderExists(source)
+	sourceAbs := assertSourceExists(source)
 	sourceObsidianRoot, err := findObsidianRoot(sourceAbs)
 
 	if err != nil {
