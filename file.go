@@ -47,20 +47,18 @@ func getAllFiles(rootPath string) []string {
 	return files
 }
 
-func copyFile(source, destination string) error {
+func copyFile(source, destination string) {
 	data, err := os.ReadFile(path.Clean(source))
 
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 
 	err = os.WriteFile(destination, data, 0600)
 
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
-
-	return nil
 }
 
 func assertSourceExists(source string) string {

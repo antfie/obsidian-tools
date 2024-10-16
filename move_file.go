@@ -77,12 +77,7 @@ func copyNote(source, destination string, deleteSource bool) {
 	}
 
 	copyAttachments(destinationAbs, attachments)
-
-	err = copyFile(sourceAbs, destinationAbs)
-
-	if err != nil {
-		log.Fatal(err)
-	}
+	copyFile(sourceAbs, destinationAbs)
 
 	if deleteSource {
 		deleteNote(source)
@@ -102,10 +97,6 @@ func copyAttachments(destinationAbs string, attachments map[string]string) {
 		sourcePath := path.Join(filePath, fileName)
 		destinationPath := path.Join(destinationAttachmentPath, fileName)
 
-		err = copyFile(sourcePath, destinationPath)
-
-		if err != nil {
-			log.Fatal(err)
-		}
+		copyFile(sourcePath, destinationPath)
 	}
 }
