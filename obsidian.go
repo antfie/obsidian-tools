@@ -74,7 +74,7 @@ func getAttachmentsFromNote(notePath string) []string {
 	}
 
 	r := regexp.MustCompile(`!\[\[.+]]`)
-	var attachments []string
+	attachments := make([]string, 0)
 
 	for _, attachment := range r.FindAllString(string(sourceFileData), -1) {
 		attachment = strings.TrimSuffix(strings.TrimPrefix(attachment, "![["), "]]")
