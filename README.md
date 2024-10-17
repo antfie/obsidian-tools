@@ -8,15 +8,15 @@
 
 This is an Obsidian toolkit. It has the following features:
 
-| Tool                       | Description                                    |
-|----------------------------|------------------------------------------------|
-| `move`                     | Move a file from one Obsidian vault to another |
-| `copy`                     | Copy a file from one Obsidian vault to another |
-| `delete`                   | Delete a note and any unreferenced attachments |
-| `find_missing_attachments` | Identify missing attachments                   |
-| `find_duplicates`          | Identify duplicate files                       |
-| `find_empty_files`         | Identify empty files                           |
-| `find_sync_conflicts`      | Identify Syncthing conflicts                   |
+| Tool                       | Description                                                                     |
+|----------------------------|---------------------------------------------------------------------------------|
+| `move`                     | Move a file from one Obsidian vault to another, removing any unreferenced files |
+| `copy`                     | Copy a file from one Obsidian vault to another                                  |
+| `delete`                   | Delete a note and any unreferenced attachments                                  |
+| `find_missing_attachments` | Identify missing attachments                                                    |
+| `find_duplicates`          | Identify duplicate files                                                        |
+| `find_empty_files`         | Identify empty files                                                            |
+| `find_sync_conflicts`      | Identify Syncthing conflicts                                                    |
 
 ## How Can I Support This?
 
