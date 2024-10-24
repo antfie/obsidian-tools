@@ -26,6 +26,7 @@ osv-scanner scan .
 
 
 echo -e "\n${CYAN}Testing...${NC}"
+mkdir -p test
 go test -v -coverprofile test/coverage.out -failfast -shuffle on -parallel 4 ./...
 go tool cover -html=test/coverage.out -o test/coverage.html
 
