@@ -22,4 +22,14 @@ echo -e "${CYAN}Releasing v${VERSION}...${NC}"
 echo
 ./scripts/build.sh
 
+
+echo -e "\n${CYAN}Creating Docker image v${VERSION}...${NC}"
+docker pull alpine
+docker build -t antfie/obsidian-tools . --no-cache
+
+
+echo -e "\n${CYAN}Publishing Docker image v${VERSION}...${NC}"
+docker push antfie/obsidian-tools
+
+
 echo -e "\n${GREEN}Release Success${NC}"
