@@ -20,6 +20,17 @@ This is an Obsidian toolkit. It has the following features:
 | `find_empty_files`         | Identify empty files                                                            |
 | `find_sync_conflicts`      | Identify Syncthing conflicts                                                    |
 
+## How Do I Run It?
+
+You can run this wherever you like. Just download the appropriate binary from [here](https://github.com/antfie/obsidian-tools/releases/latest).
+
+### Using Docker
+
+```bash
+docker pull antfie/obsidian-tools
+docker run --rm -it -v "$(pwd):/vault" antfie/obsidian-tools find_empty_files /vault
+```
+
 ## How Can I Support This?
 
 W welcome fixes, features and donations.
