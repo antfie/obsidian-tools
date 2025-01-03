@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"path"
@@ -9,6 +9,11 @@ import (
 	"regexp"
 	"strings"
 )
+
+type ObsidianFile struct {
+	Hash        string
+	Attachments []string
+}
 
 func findObsidianRoot(path string) (string, error) {
 	if !isDir(path) {
@@ -23,63 +28,67 @@ func findObsidianRoot(path string) (string, error) {
 		lastPath := path
 		path = filepath.Dir(path)
 
-		// If the path has not changed we have reached the root
+		// If the path has not changed then we have reached the filesystem root
 		if lastPath == path {
 			return "", os.ErrNotExist
 		}
 	}
 }
 
-type ObsidianConfig struct {
-	AttachmentFolderPath string `json:"attachmentFolderPath"`
-}
-
-func getAttachmentPath(obsidianRoot string) string {
-	obsidianConfigFile := filepath.Join(obsidianRoot, ".obsidian", "app.json")
-
-	data, err := os.ReadFile(path.Clean(obsidianConfigFile))
+func getAttachmentsFromNote(allFiles []string, notePath string) ([]string, []string) {
+	var warnings []string
+	noteData, err := os.ReadFile(path.Clean(notePath))
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	config := ObsidianConfig{}
-	err = json.Unmarshal(data, &config)
+	r := regexp.MustCompile(`!\[\[[^!\]]+]]`)
 
-	if err != nil {
-		log.Fatal(err)
-	}
+	// Attachments can be a filename or a (relative) path
+	var attachments []string
 
-	return path.Join(obsidianRoot, config.AttachmentFolderPath)
-}
+	for _, attachment := range r.FindAllString(string(noteData), -1) {
+		formattedAttachment := strings.TrimSuffix(strings.TrimPrefix(attachment, "![["), "]]")
 
-func getNotes(files []string) []string {
-	var notes []string
-
-	for _, file := range files {
-		if strings.ToLower(path.Ext(file)) == ".md" {
-			notes = append(notes, file)
+		// With no file extension it could be a Markdown file
+		if len(filepath.Ext(formattedAttachment)) == 0 {
+			for _, file := range allFiles {
+				if strings.HasSuffix(file, "/"+formattedAttachment+".md") {
+					formattedAttachment = file
+					break
+				}
+			}
 		}
 
+		attachments = append(attachments, formattedAttachment)
 	}
 
-	return notes
-}
+	var resolvedAttachmentAbsolutePaths []string
 
-func getAttachmentsFromNote(notePath string) []string {
-	sourceFileData, err := os.ReadFile(path.Clean(notePath))
-
-	if err != nil {
-		log.Fatal(err)
+	// Resolve the absolute paths to the attachments
+	for _, file := range allFiles {
+		for _, attachment := range attachments {
+			if file == attachment || strings.HasSuffix(file, "/"+attachment) {
+				resolvedAttachmentAbsolutePaths = append(resolvedAttachmentAbsolutePaths, file)
+			}
+		}
 	}
 
-	r := regexp.MustCompile(`!\[\[.+]]`)
-	attachments := make([]string, 0)
+	// Check to make sure we found all the attachments
+	for _, attachment := range attachments {
+		found := false
 
-	for _, attachment := range r.FindAllString(string(sourceFileData), -1) {
-		attachment = strings.TrimSuffix(strings.TrimPrefix(attachment, "![["), "]]")
-		attachments = append(attachments, attachment)
+		for _, resolvedAttachment := range resolvedAttachmentAbsolutePaths {
+			if resolvedAttachment == attachment || strings.HasSuffix(resolvedAttachment, "/"+attachment) {
+				found = true
+			}
+		}
+
+		if !found {
+			warnings = append(warnings, fmt.Sprintf("Could not find attachment \"%s\" referenced by \"%s\".", attachment, notePath))
+		}
 	}
 
-	return attachments
+	return resolvedAttachmentAbsolutePaths, warnings
 }

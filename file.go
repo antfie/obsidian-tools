@@ -2,22 +2,15 @@ package main
 
 import (
 	"errors"
+	"github.com/antfie/obsidian-tools/utils"
 	"log"
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 )
 
-var ignoredFileNames = []string{
-	".DS_Store",
-}
-
-var ignoredFolderNames = []string{
-	".stversions",
-	".git",
-}
-
-func getAllFiles(rootPath string) []string {
+func GetAllFiles(rootPath string, folderNamesToIgnore, fileNamesToIgnore []string) ([]string, error) {
 	var files []string
 
 	err := filepath.Walk(rootPath, func(currentPath string, info os.FileInfo, err error) error {
@@ -25,40 +18,28 @@ func getAllFiles(rootPath string) []string {
 			return err
 		}
 
-		base := path.Base(currentPath)
+		fileName := path.Base(currentPath)
 
 		if info.IsDir() {
-			if isInArray(base, ignoredFolderNames) {
+			if utils.IsInArray(fileName, folderNamesToIgnore) {
 				return filepath.SkipDir
 			}
 		} else {
-			if !isInArray(base, ignoredFileNames) {
-				files = append(files, currentPath)
+			if !utils.IsInArray(fileName, fileNamesToIgnore) {
+				absoluteFileName, err := filepath.Abs(currentPath)
+
+				if err != nil {
+					return err
+				}
+
+				files = append(files, absoluteFileName)
 			}
 		}
 
 		return nil
 	})
 
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return files
-}
-
-func copyFile(source, destination string) {
-	data, err := os.ReadFile(path.Clean(source))
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = os.WriteFile(destination, data, 0600)
-
-	if err != nil {
-		log.Fatal(err)
-	}
+	return files, err
 }
 
 func assertSourceExists(source string) string {
@@ -81,4 +62,18 @@ func isDir(path string) bool {
 	}
 
 	return false
+}
+
+func isMarkdownFile(filePath string) bool {
+	return strings.ToLower(filepath.Ext(filePath)) == ".md"
+}
+
+func IsFile(path string) (bool, error) {
+	info, err := os.Stat(path)
+
+	if err != nil {
+		return false, err
+	}
+
+	return !info.IsDir(), nil
 }

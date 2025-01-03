@@ -1,7 +1,9 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
+	"github.com/antfie/obsidian-tools/utils"
 	"log"
 	"os"
 	"strings"
@@ -10,10 +12,26 @@ import (
 //goland:noinspection GoUnnecessarilyExportedIdentifiers
 var AppVersion = "0.0"
 
-var usageText = "No command specified. Usage: go run main.go command.\nAvailable commands:\n  move\n  copy\n  delete\n  find_missing_attachments\n  find_duplicates\n  find_empty_files\n  find_sync_conflicts\n"
+var usageText = "Usage: go run main.go command.\nAvailable commands:\n  move\n  copy\n  delete\n  find_missing_attachments\n  find_duplicates\n  find_empty_files\n  find_sync_conflicts\n"
+
+//go:embed config.yaml
+var defaultConfigData []byte
 
 func main() {
 	print(fmt.Sprintf("obsidian-tools version %s\n", AppVersion))
+
+	c := Load(defaultConfigData)
+
+	err := utils.SetupLogger(c.LogFilePath)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx := &Context{
+		Config:     c,
+		Repository: NewRepository(c),
+	}
 
 	if len(os.Args) < 2 {
 		log.Fatal("No command specified. " + usageText)
@@ -27,7 +45,12 @@ func main() {
 			log.Fatal("Move requires source and destination.")
 		}
 
-		copyNote(os.Args[2], os.Args[3], true)
+		err = ctx.CopyNotes(os.Args[2], os.Args[3], true)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
 		return
 
 	case "copy":
@@ -35,7 +58,12 @@ func main() {
 			log.Fatal("Copy requires source and destination.")
 		}
 
-		copyNote(os.Args[2], os.Args[3], false)
+		err = ctx.CopyNotes(os.Args[2], os.Args[3], false)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
 		return
 
 	case "delete":
@@ -43,7 +71,7 @@ func main() {
 			log.Fatal("Delete requires a source")
 		}
 
-		deleteNote(os.Args[2])
+		ctx.DeleteNote(os.Args[2])
 		return
 
 	case "find_missing_attachments":
@@ -51,7 +79,7 @@ func main() {
 			log.Fatal("Find missing attachments requires a source.")
 		}
 
-		findMissingAttachments(os.Args[2])
+		ctx.FindMissingAttachments(os.Args[2])
 		return
 
 	case "find_duplicates":
@@ -59,7 +87,7 @@ func main() {
 			log.Fatal("Find duplicates requires a source.")
 		}
 
-		findDuplicates(os.Args[2])
+		ctx.FindDuplicates(os.Args[2])
 		return
 
 	case "find_empty_files":
@@ -67,7 +95,7 @@ func main() {
 			log.Fatal("Find sync conflicts requires a source.")
 		}
 
-		findEmptyFiles(os.Args[2])
+		ctx.FindEmptyFiles(os.Args[2])
 		return
 
 	case "find_sync_conflicts":
@@ -75,7 +103,7 @@ func main() {
 			log.Fatal("Find sync conflicts requires a source.")
 		}
 
-		findSyncConflicts(os.Args[2])
+		ctx.FindSyncConflicts(os.Args[2])
 		return
 	}
 

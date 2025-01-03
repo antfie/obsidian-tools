@@ -8,17 +8,21 @@
 
 # obsidian-tools
 
+If you're looking for a tool to move/copy files between Obsidian vaults, you found it.
+
+Disclaimer: I will not be responsible for any data loss caused by this tool.
+
 This is an Obsidian toolkit. It has the following features:
 
 | Tool                       | Description                                                                     |
 |----------------------------|---------------------------------------------------------------------------------|
-| `move`                     | Move a file from one Obsidian vault to another, removing any unreferenced files |
-| `copy`                     | Copy a file from one Obsidian vault to another                                  |
+| `move`                     | Move a note from one Obsidian vault to another, removing any unreferenced files |
+| `copy`                     | Copy a note from one Obsidian vault to another                                  |
 | `delete`                   | Delete a note and any unreferenced attachments                                  |
-| `find_missing_attachments` | Identify missing attachments                                                    |
-| `find_duplicates`          | Identify duplicate files                                                        |
-| `find_empty_files`         | Identify empty files                                                            |
-| `find_sync_conflicts`      | Identify Syncthing conflicts                                                    |
+| `find_missing_attachments` | Find missing attachments                                                        |
+| `find_duplicates`          | Find duplicate files                                                        |
+| `find_empty_files`         | Find empty files                                                            |
+| `find_sync_conflicts`      | Find Syncthing conflicts                                                    |
 
 ## How Do I Run It?
 
@@ -33,4 +37,4 @@ docker run --rm -it -v "$(pwd):/vault" antfie/obsidian-tools find_empty_files /v
 
 ## How Can I Support This?
 
-W welcome fixes, features and donations.
+We welcome fixes, features and donations.

@@ -1,6 +1,6 @@
-package main
+package utils
 
-func isInArray(in string, array []string) bool {
+func IsInArray(in string, array []string) bool {
 	for _, item := range array {
 		if item == in {
 			return true

@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func findSyncConflicts(source string) {
+func (ctx *Context) FindSyncConflicts(source string) {
 	sourceAbs := assertSourceExists(source)
 	sourceObsidianRoot, err := findObsidianRoot(sourceAbs)
 
@@ -14,11 +14,15 @@ func findSyncConflicts(source string) {
 		log.Fatal(err)
 	}
 
-	allFiles := getAllFiles(sourceObsidianRoot)
+	err = ctx.Repository.PopulateFromVault(sourceObsidianRoot, false)
 
-	for _, file := range allFiles {
-		if strings.Contains(path.Base(file), "sync-conflict-") {
-			println(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for filePath := range ctx.Repository.GetAllFiles() {
+		if strings.Contains(path.Base(filePath), "sync-conflict-") {
+			println(filePath)
 		}
 	}
 }
