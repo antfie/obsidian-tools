@@ -66,7 +66,7 @@ func parseConfigFile(configFilePath string) *Config {
 	}
 
 	return &Config{
-		LogFilePath:                 configFilePath,
+		LogFilePath:                 config.LogFilePath,
 		DryRun:                      config.DryRun,
 		MaxConcurrentFileOperations: config.MaxConcurrentFileOperations,
 		FileNamesToIgnore:           config.FileNamesToIgnore,

@@ -3,24 +3,23 @@ package main
 import (
 	"fmt"
 	"github.com/antfie/obsidian-tools/utils"
-	"log"
 	"path"
 )
 
 const emptyFileHash = "3Qdi4H7DKe5XH67XhEgeE75C7Tp8JKWWT7PYiTaZHCrtwMdNiw3sUWfHm482HiPDcWsQMpEvJnK5xn68hhSiassT"
 
-func (ctx *Context) FindDuplicates(source string) {
+func (ctx *Context) FindDuplicates(source string) error {
 	sourceAbs := assertSourceExists(source)
 	sourceObsidianRoot, err := findObsidianRoot(sourceAbs)
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	err = ctx.Repository.PopulateFromVault(sourceObsidianRoot, true)
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	hashes := make(map[string][]string)
@@ -121,4 +120,6 @@ func (ctx *Context) FindDuplicates(source string) {
 			}
 		}
 	}
+
+	return nil
 }

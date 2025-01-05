@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"path"
@@ -35,8 +34,7 @@ func findObsidianRoot(path string) (string, error) {
 	}
 }
 
-func getAttachmentsFromNote(allFiles []string, notePath string) ([]string, []string) {
-	var warnings []string
+func getAttachmentsFromNote(allFiles []string, notePath string) []string {
 	noteData, err := os.ReadFile(path.Clean(notePath))
 
 	if err != nil {
@@ -86,9 +84,9 @@ func getAttachmentsFromNote(allFiles []string, notePath string) ([]string, []str
 		}
 
 		if !found {
-			warnings = append(warnings, fmt.Sprintf("Could not find attachment \"%s\" referenced by \"%s\".", attachment, notePath))
+			log.Printf("Could not find attachment \"%s\" referenced by \"%s\".", attachment, notePath)
 		}
 	}
 
-	return resolvedAttachmentAbsolutePaths, warnings
+	return resolvedAttachmentAbsolutePaths
 }

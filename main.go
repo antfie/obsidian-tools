@@ -2,11 +2,14 @@ package main
 
 import (
 	_ "embed"
+	"errors"
 	"fmt"
 	"github.com/antfie/obsidian-tools/utils"
 	"log"
+	"math"
 	"os"
 	"strings"
+	"time"
 )
 
 //goland:noinspection GoUnnecessarilyExportedIdentifiers
@@ -18,7 +21,6 @@ var usageText = "Usage: go run main.go command.\nAvailable commands:\n  move\n  
 var defaultConfigData []byte
 
 func main() {
-	print(fmt.Sprintf("obsidian-tools version %s\n", AppVersion))
 
 	c := Load(defaultConfigData)
 
@@ -33,79 +35,88 @@ func main() {
 		Repository: NewRepository(c),
 	}
 
+	dryRunFormat := ""
+
+	if c.DryRun {
+		dryRunFormat = " (dry run)"
+	}
+
+	utils.ConsoleAndLogPrintf("Data Tools version %s%s. Using %s for file operations", AppVersion, dryRunFormat, utils.Pluralize("thread", ctx.Config.MaxConcurrentFileOperations))
+
 	if len(os.Args) < 2 {
 		log.Fatal("No command specified. " + usageText)
 	}
 
-	command := os.Args[1]
+	startTime := time.Now()
 
-	switch strings.ToLower(command) {
+	err = ctx.runCommand(strings.ToLower(os.Args[1]))
+
+	if err != nil {
+		utils.ConsoleAndLogPrintf("%v", err)
+	}
+
+	duration := math.Round(time.Since(startTime).Seconds())
+	formattedDuration := fmt.Sprintf("%.0f second", duration)
+
+	if duration != 1 {
+		formattedDuration += "s"
+	}
+
+	utils.ConsoleAndLogPrintf("Finished in %s", formattedDuration)
+}
+
+func (ctx *Context) runCommand(command string) error {
+	switch command {
 	case "move":
 		if len(os.Args) != 4 {
 			log.Fatal("Move requires source and destination.")
 		}
 
-		err = ctx.CopyNotes(os.Args[2], os.Args[3], true)
-
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		return
+		return ctx.CopyNotes(os.Args[2], os.Args[3], true)
 
 	case "copy":
 		if len(os.Args) != 4 {
 			log.Fatal("Copy requires source and destination.")
 		}
 
-		err = ctx.CopyNotes(os.Args[2], os.Args[3], false)
-
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		return
+		return ctx.CopyNotes(os.Args[2], os.Args[3], false)
 
 	case "delete":
 		if len(os.Args) != 3 {
 			log.Fatal("Delete requires a source")
 		}
 
-		ctx.DeleteNote(os.Args[2])
-		return
+		return ctx.DeleteNote(os.Args[2])
 
 	case "find_missing_attachments":
 		if len(os.Args) != 3 {
 			log.Fatal("Find missing attachments requires a source.")
 		}
 
-		ctx.FindMissingAttachments(os.Args[2])
-		return
+		return ctx.FindMissingAttachments(os.Args[2])
 
 	case "find_duplicates":
 		if len(os.Args) != 3 {
 			log.Fatal("Find duplicates requires a source.")
 		}
 
-		ctx.FindDuplicates(os.Args[2])
-		return
+		return ctx.FindDuplicates(os.Args[2])
 
 	case "find_empty_files":
 		if len(os.Args) != 3 {
 			log.Fatal("Find sync conflicts requires a source.")
 		}
 
-		ctx.FindEmptyFiles(os.Args[2])
-		return
+		return ctx.FindEmptyFiles(os.Args[2])
 
 	case "find_sync_conflicts":
 		if len(os.Args) != 3 {
 			log.Fatal("Find sync conflicts requires a source.")
 		}
 
-		ctx.FindSyncConflicts(os.Args[2])
-		return
+		return ctx.FindSyncConflicts(os.Args[2])
+
 	}
 
-	log.Fatalf("Command \"%s\" not recognised. %s", command, usageText)
+	return errors.New(fmt.Sprintf("Command \"%s\" not recognised. %s", command, usageText))
 }

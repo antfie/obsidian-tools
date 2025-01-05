@@ -39,7 +39,7 @@ func (r *Repository) PopulateFromVault(vaultRootPath string, analyze bool) error
 		return nil
 	}
 
-	log.Printf("Analysing %s in vault \"%s\" with %s", utils.Pluralize("file", len(allFiles)), vaultRootPath, utils.Pluralize("thread", r.Config.MaxConcurrentFileOperations))
+	utils.ConsoleAndLogPrintf("Analysing %s in vault \"%s\" with %s", utils.Pluralize("file", len(allFiles)), vaultRootPath, utils.Pluralize("thread", r.Config.MaxConcurrentFileOperations))
 
 	// Sort by path length descending to facilitate attachment path resolution
 	sort.Slice(allFiles, func(i, j int) bool {
@@ -47,7 +47,6 @@ func (r *Repository) PopulateFromVault(vaultRootPath string, analyze bool) error
 	})
 
 	bar := progressbar.Default(int64(len(allFiles)))
-	var warnings []string
 
 	var mapMutex sync.Mutex
 	var wg sync.WaitGroup
@@ -67,17 +66,15 @@ func (r *Repository) PopulateFromVault(vaultRootPath string, analyze bool) error
 			}
 
 			var attachments []string
-			var warningsFromThisFile []string
 
 			// Only markdown files can have attachments
 			if isMarkdownFile(filePath) {
-				attachments, warningsFromThisFile = getAttachmentsFromNote(allFiles, filePath)
+				attachments = getAttachmentsFromNote(allFiles, filePath)
 			}
 
 			// Maps are not threadsafe
 			mapMutex.Lock()
 
-			warnings = append(warnings, warningsFromThisFile...)
 			r.files[filePath] = ObsidianFile{
 				Hash:        hash,
 				Attachments: attachments,
@@ -97,10 +94,6 @@ func (r *Repository) PopulateFromVault(vaultRootPath string, analyze bool) error
 
 	// Wait for the batches to finish
 	wg.Wait()
-
-	for _, warning := range warnings {
-		log.Printf(warning)
-	}
 
 	return nil
 }

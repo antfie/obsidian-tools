@@ -12,7 +12,7 @@ func assertFileIsMarkdownFile(file string) {
 	}
 }
 
-func (ctx *Context) DeleteNote(source string) {
+func (ctx *Context) DeleteNote(source string) error {
 	sourceAbs := assertSourceExists(source)
 
 	assertFileIsMarkdownFile(sourceAbs)
@@ -88,4 +88,6 @@ func (ctx *Context) DeleteNote(source string) {
 	//		}
 	//	}
 	//}
+
+	return nil
 }

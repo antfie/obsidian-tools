@@ -1,23 +1,22 @@
 package main
 
 import (
-	"log"
 	"path"
 	"strings"
 )
 
-func (ctx *Context) FindSyncConflicts(source string) {
+func (ctx *Context) FindSyncConflicts(source string) error {
 	sourceAbs := assertSourceExists(source)
 	sourceObsidianRoot, err := findObsidianRoot(sourceAbs)
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	err = ctx.Repository.PopulateFromVault(sourceObsidianRoot, false)
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	for filePath := range ctx.Repository.GetAllFiles() {
@@ -25,4 +24,6 @@ func (ctx *Context) FindSyncConflicts(source string) {
 			println(filePath)
 		}
 	}
+
+	return nil
 }

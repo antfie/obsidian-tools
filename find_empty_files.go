@@ -1,34 +1,35 @@
 package main
 
 import (
-	"log"
 	"os"
 )
 
-func (ctx *Context) FindEmptyFiles(source string) {
+func (ctx *Context) FindEmptyFiles(source string) error {
 	sourceAbs := assertSourceExists(source)
 
 	sourceObsidianRoot, err := findObsidianRoot(sourceAbs)
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	err = ctx.Repository.PopulateFromVault(sourceObsidianRoot, false)
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	for filePath := range ctx.Repository.GetAllFiles() {
 		stat, err := os.Stat(filePath)
 
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		if stat.Size() == 0 {
 			println(filePath)
 		}
 	}
+
+	return nil
 }
