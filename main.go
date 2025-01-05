@@ -15,7 +15,7 @@ import (
 //goland:noinspection GoUnnecessarilyExportedIdentifiers
 var AppVersion = "0.0"
 
-var usageText = "Usage: go run main.go command.\nAvailable commands:\n  move\n  copy\n  delete\n  find_missing_attachments\n  find_duplicates\n  find_empty_files\n  find_sync_conflicts\n"
+var usageText = "Usage: ./obsidian-tools command.\nAvailable commands:\n  move\n  copy\n  delete\n  find_missing_attachments\n  find_duplicates\n  find_empty_files\n  find_sync_conflicts\n"
 
 //go:embed config.yaml
 var defaultConfigData []byte
