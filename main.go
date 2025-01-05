@@ -44,7 +44,8 @@ func main() {
 	utils.ConsoleAndLogPrintf("Data Tools version %s%s. Using %s for file operations", AppVersion, dryRunFormat, utils.Pluralize("thread", ctx.Config.MaxConcurrentFileOperations))
 
 	if len(os.Args) < 2 {
-		log.Fatal("No command specified. " + usageText)
+		utils.ConsoleAndLogPrintf(fmt.Sprintf("A command must be specified. %s", usageText))
+		return
 	}
 
 	startTime := time.Now()
@@ -52,7 +53,7 @@ func main() {
 	err = ctx.runCommand(strings.ToLower(os.Args[1]))
 
 	if err != nil {
-		utils.ConsoleAndLogPrintf("%v", err)
+		utils.ConsoleAndLogPrintf("Error: %v", err)
 	}
 
 	duration := math.Round(time.Since(startTime).Seconds())
