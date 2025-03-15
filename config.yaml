@@ -1,5 +1,5 @@
 log_file_path: obsidian-tools.log
-dry_run: true
+dry_run: false
 max_concurrent_file_operations: 10
 
 file_names_to_ignore:
