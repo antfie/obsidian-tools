@@ -48,9 +48,11 @@ func main() {
 		return
 	}
 
-	startTime := time.Now()
+	command := strings.ToLower(os.Args[1])
+	utils.ConsoleAndLogPrintf("Running command: %s", command)
 
-	err = ctx.runCommand(strings.ToLower(os.Args[1]))
+	startTime := time.Now()
+	err = ctx.runCommand(command)
 
 	if err != nil {
 		utils.ConsoleAndLogPrintf("Error: %v", err)
